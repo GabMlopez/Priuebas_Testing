@@ -24,7 +24,7 @@ jobs:
       # 3. Ejecuta el smoke test con k6
       - name: Run k6 Smoke Test
         run: |
-          k6 run tests/load/smoke.js \
+          k6 run test/k6/k6_smoke.js \
             --out json=k6-smoke-results.json \
             --summary-export=k6-smoke-summary.html
 
