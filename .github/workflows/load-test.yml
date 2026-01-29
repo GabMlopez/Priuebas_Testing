@@ -44,7 +44,7 @@ jobs:
       - name: Run JMeter Load Test
         run: |
           ./jmeter/bin/jmeter -n \
-            -t tests/jmeter/Testing.jmx \
+            -t test/jmeter/Testing.jmx \
             -l jmeter-results.jtl \
             -e -o jmeter-report-html/
 
