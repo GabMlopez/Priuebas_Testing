@@ -4,14 +4,22 @@
   "main": "src/server.js",
   "scripts": {
     "start": "node src/server.js",
-    "dev": "nodemon src/server.js"
+    "dev": "nodemon src/server.js",
+    "test:load:smoke":    "k6 run test/k6/k6_smoke.js",
+    "test:load:average":  "k6 run --env ENV=staging tests/load/average-load.js",
+    "test:load:stress":   "k6 run --env ENV=prod tests/load/stress.js",
+    "test:load:cloud":    "k6 cloud tests/load/average-load.js",
+    "lint:load":          "eslint tests/load --ext .js,.ts"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
     "jsonwebtoken": "^9.0.0",
-    "mongoose": "^7.3.1"
+    "mongoose": "^7.3.1",
+    "@types/k6": "^0.53.0",  
+    "eslint": "^9.x",
+    "typescript": "^5.x"
   },
   "devDependencies": {
     "nodemon": "^3.0.1"

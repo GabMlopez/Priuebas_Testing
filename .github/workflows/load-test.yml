@@ -1,0 +1,61 @@
+name: Load & Performance Tests (k6 + JMeter)
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+  workflow_dispatch:
+
+jobs:
+  performance-tests:
+    runs-on: ubuntu-latest
+    steps:
+      # 1. Checkout del repo
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # 2. Instalar k6 
+      - name: Setup k6
+        uses: grafana/setup-k6-action@v1
+        with:
+          version: latest
+
+      # 3. Ejecuta el smoke test con k6
+      - name: Run k6 Smoke Test
+        run: |
+          k6 run tests/load/smoke.js \
+            --out json=k6-smoke-results.json \
+            --summary-export=k6-smoke-summary.html
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Download and Setup Apache JMeter
+        run: |
+          wget https://dlcdn.apache.org//jmeter/binaries/apache-jmeter-5.6.3.zip
+          unzip apache-jmeter-5.6.3.zip
+          mv apache-jmeter-5.6.3 jmeter
+          chmod +x jmeter/bin/jmeter
+
+      - name: Run JMeter Load Test
+        run: |
+          ./jmeter/bin/jmeter -n \
+            -t tests/jmeter/Testing.jmx \
+            -l jmeter-results.jtl \
+            -e -o jmeter-report-html/
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: load-test-results
+          path: |
+            k6-*.json
+            k6-*.html
+            jmeter-results.jtl
+            jmeter-report-html/
+          retention-days: 14

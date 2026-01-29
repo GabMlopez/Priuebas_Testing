@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
 
 // Middleware para verificar el token JWT
-module.exports = (req, res, next) => {
+module.exports = function auth (req, res, next) {
   // Extrae el token del header
   const token = req.header('Authorization')?.replace('Bearer ', '');
   if (!token) return res.status(401).json({ error: 'Acceso denegado' });

@@ -10,11 +10,7 @@ const app = express();
 
 // Middleware para parsear cuerpos en formato JSON
 app.use(express.json());
-
-// Conexión a la base de datos MongoDB
-mongoose.connect(process.env.MONGO_URI)
-  .then(() => console.log('Conectado a MongoDB'))
-  .catch(err => console.error('Error al conectar MongoDB', err));
+app.disable('x-powered-by');
 
 // Rutas para autenticación y reservas/turnos
 app.use('/api/auth', require('./routes/auth'));
@@ -22,3 +18,12 @@ app.use('/api/reservas', require('./routes/reserva'));
 
 // Exporta la app configurada
 module.exports = app;
+
+module.exports.connectDB = async () => {
+  try {
+    await mongoose.connect(process.env.MONGO_URI);
+    console.log('Conectado a MongoDB');
+  } catch (err) {
+    console.error('Error al conectar MongoDB', err);
+  }
+};
